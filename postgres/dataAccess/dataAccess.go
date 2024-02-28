@@ -1,4 +1,4 @@
-package postgresDataAccess
+package dataAccess
 
 import (
 	"database/sql"

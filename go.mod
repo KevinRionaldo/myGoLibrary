@@ -1,4 +1,4 @@
-module mqttLib
+module github.com/KevinRionaldo/myGoLibrary
 
 go 1.21.6
 

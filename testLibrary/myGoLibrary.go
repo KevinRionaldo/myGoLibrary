@@ -1,5 +1,5 @@
-// myGoLibrary.go
-package mqttLib
+// testLibrary.go
+package testLibrary
 
 import "fmt"
 

@@ -1,5 +1,5 @@
-// mylibrary.go
-package mylibrary
+// myGoLibrary.go
+package myGoLibrary
 
 import "fmt"
 

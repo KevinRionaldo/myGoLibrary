@@ -1,4 +1,4 @@
-package myGoLibrary
+package mqttLib
 
 import (
 	"fmt"

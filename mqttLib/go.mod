@@ -1,4 +1,4 @@
-module mqttLib.go
+module mqttLib
 
 go 1.21.6
 

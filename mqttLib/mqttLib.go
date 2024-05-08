@@ -78,8 +78,8 @@ func PublishAndListening(publishMessage string, publishTopic string, listeningTo
 	publish(client, publishMessage, publishTopic)
 
 	timer := 0
-	for receivedMessage == "no response" && timer < 10 {
-		time.Sleep(time.Second)
+	for receivedMessage == "no response" && timer < 10*1000 {
+		time.Sleep(time.Millisecond)
 		timer++
 	}
 

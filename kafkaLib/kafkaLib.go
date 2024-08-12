@@ -85,7 +85,6 @@ func Consumer(brokersUrl string, ClientID string, topic string, partition int32)
 				log.Printf("<-signals")
 				return
 			case message := <-partitionConsumer.Messages():
-				log.Printf("nunggu message")
 				fmt.Printf("Received message: %s\n", string(message.Value))
 			}
 		}

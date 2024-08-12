@@ -2,6 +2,7 @@ package mqttLib
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -16,25 +17,22 @@ var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Me
 }
 
 var connectHandler mqtt.OnConnectHandler = func(client mqtt.Client) {
-	fmt.Println("Connected")
+	log.Println("Connected")
 }
 
 var connectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err error) {
 	fmt.Printf("Connect lost: %v", err)
 }
 
-func publish(client mqtt.Client, publishMessage string, publishTopic string) (string, error) {
-	// client.Publish(publishTopic, 0, false, publishMessage)
+func publish(client mqtt.Client, publishMessage string, publishTopic string) {
 	token := client.Publish(publishTopic, 0, false, publishMessage)
 	token.Wait()
 	// time.Sleep(time.Second)
-
-	return publishMessage, nil
 }
 func subscribe(client mqtt.Client, topic string) {
 	token := client.Subscribe(topic, 1, nil)
 	token.Wait()
-	fmt.Printf("Subscribed to topic %s", topic)
+	fmt.Printf("Subscribed to topic: %s", topic)
 }
 
 func mqttConfig() mqtt.Client {
@@ -49,6 +47,7 @@ func mqttConfig() mqtt.Client {
 	opts.SetDefaultPublishHandler(messagePubHandler)
 	opts.OnConnect = connectHandler
 	opts.OnConnectionLost = connectLostHandler
+
 	client := mqtt.NewClient(opts)
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
 		panic(token.Error())
@@ -62,28 +61,28 @@ func MainPublish(publishMessage string, publishTopic string) (string, error) {
 	client := mqttConfig()
 
 	//publish message
-	publishResult, err := publish(client, publishMessage, publishTopic)
-	if err != nil || publishResult != publishMessage {
-		return "", err
-	}
+	publish(client, publishMessage, publishTopic)
+
 	client.Disconnect(250)
 
-	return publishResult, err
+	return publishMessage, nil
 }
 
 func PublishAndListening(publishMessage string, publishTopic string, listeningTopic string) string {
-	//config mqtt
 	client := mqttConfig()
+
 	subscribe(client, listeningTopic)
 	publish(client, publishMessage, publishTopic)
-
-	timer := 10 * 1000                                        //10 seconds in microseconds
-	for receivedMessage == "no response" && timer < 10*1000 { //wait 10 seconds for the message in range of miliseconds
-		time.Sleep(time.Millisecond)
-		timer++
+	targetTime := 10 * time.Second // 10 seconds
+	timer := 0
+	for receivedMessage == "no response" && timer < int(targetTime) {
+		time.Sleep(time.Millisecond) // Wait for 1 millisecond
+		timer += int(time.Millisecond)
 	}
 
 	client.Disconnect(250)
 
-	return receivedMessage
+	response := receivedMessage
+	receivedMessage = "no response"
+	return response
 }
